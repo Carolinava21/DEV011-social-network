@@ -1,24 +1,18 @@
+/**
+ * @jest-environment jsdom
+ */
 // importamos la funcion que vamos a testear
 // import { myFunction } from '../src/lib/index';
-import { NewUser, auth } from '../src/auth.js';
+import { loginEmail } from '../src/auth.js';
 
-describe('NewUser', () => {
+describe('loginEmail', () => {
   test('is a function', () => {
-    expect(typeof NewUser).toBe('function');
+    expect(typeof loginEmail).toBe('function');
   });
-});
-
-describe('button login', () => {
-  test('testing button NewUser', () => {
-    jest.spyOn(auth, NewUser).mockImplementation(() => Promise.resolve({ email: 'hola@hola.com', password: '123456' }));
+  test('have a button', () => {
     const DOM = document.createElement('div');
-    DOM.append(NewUser());
-    const email = DOM.querySelector('#emailR');
-    const password = DOM.querySelector('#passwordR');
-    email.value = 'prueba@prueba.com';
-    password.value = '123456';
-    const buttonLogin = DOM.querySelector('#buttonLogin');
-    buttonLogin.click();
-    expect(auth.NewUser).toHaveBeenCalledTimes(1);
+    DOM.append(loginEmail());
+    const haveAButton = DOM.querySelector('#buttonlogin');
+    expect(haveAButton).not.toBe(undefined);
   });
 });

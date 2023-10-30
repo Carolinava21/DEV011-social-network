@@ -1,3 +1,5 @@
+/* primera interfaz*/
+
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500&display=swap');
 * {
   margin: 0;
@@ -42,6 +44,7 @@ h2{
 .slogan{
     margin: -1em 6em 15em -2em;
 }
+/*imagen café*, para login, register, home (lista con responsive)*/
 .image1 {
   max-width: 140%; /* La imagen no será más ancha que su contenedor */
   height: auto; /* La altura se ajustará proporcionalmente al ancho */
@@ -127,6 +130,7 @@ hr {
   margin: 0.3em 4em 0.3em 7em;
     font-size: 1.5rem;
 }
+/*REGISTER*/
 .newac {
   margin-top: 10px;
   text-align: center;
@@ -269,7 +273,7 @@ hr {
     text-align: center;
   }
   .mujeres-page .text {
-    margin-bottom: 30px;
+    margin-bottom: 50px;
   }
   .image1 {
     display: relative;
@@ -277,14 +281,15 @@ hr {
     height: auto; /* La altura se ajustará proporcionalmente al ancho */
     margin: -50em 5em -12em -15em;
     /* width: 140%; */
-    .postContainer
+  }
+  .postContainer
 {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 }
-}
+
 @media screen and (max-width: 768px) {
   body {
     background-size: 100%; /* Ajusta el tamaño de la imagen para pantallas pequeñas */
@@ -341,5 +346,8 @@ align-items: center;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.slogan {
+  font-size: 100% ;
 }
 }
