@@ -1,6 +1,6 @@
 // import { async } from 'regenerator-runtime';
 import {
-  addPost, paintRealTime, deletePost, editpost, updateDoc
+  addPost, paintRealTime, deletePost, editpost, updateDoc, likePost
 } from '../lib/index.js';
 import { auth } from '../auth.js';
 
@@ -91,7 +91,8 @@ export function home(navigateTo) {
     btnLike.forEach((btn) => {
       btn.addEventListener('click', ({ target: { dataset } }) => {
         console.log(dataset);
-        const doc = await editpost(e.target.dataset.id);
+        const doc = await likePost(e.target.dataset.id);
+        console.log(doc)
       });
     });
   });
