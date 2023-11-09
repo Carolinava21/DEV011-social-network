@@ -11,8 +11,7 @@ import {
 } from '../src/auth.js';
 import * as prueba from '../src/auth.js';
 import { register } from '../src/elements/register.js';
-// import * as index from '../src/elements/register.js';
-// import { register } from '../src/elements/register.js';
+
 describe('authGoogle', () => {
   test('is a function', () => {
     expect(typeof authGoogle).toBe('function');
@@ -41,9 +40,7 @@ describe('button login', () => {
     setTimeout(() => {
       expect(navigateTo).toHaveBeenCalledWith('/login');
     });
-  //   expect(spyNewUser).toHaveBeenCalledWith('prueba@prueba49.com', '123456');
-  //   const user = spyNewUser.mock.results[0].value;
-  //   console.log({ user }, 'desde aquiiiiiiiiiiiiiiiii');
-  //  expect(user.email).toBe('prueba@prueba49.com');
   });
 });
+// prueba boton like
+

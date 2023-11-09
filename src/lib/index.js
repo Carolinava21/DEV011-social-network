@@ -1,19 +1,17 @@
+import { doc } from 'firebase/firestore';
 import {
-  db, 
-  collection, 
-  addDoc, 
-  getDocs, 
-  onSnapshot, 
-  query, 
-  orderBy,  
-  deleteDoc, 
-  getDoc, 
-  updateDoc
+  db,
+  collection,
+  addDoc,
+  getDocs,
+  onSnapshot,
+  query,
+  orderBy,
+  deleteDoc,
+  getDoc,
+  updateDoc,
 
 } from '../firestore.js';
-
-import { doc } from 'firebase/firestore';
-
 
 const postCollection = collection(db, 'posts');
 
@@ -34,7 +32,6 @@ export const paintRealTime = (callback) => onSnapshot(q, callback);
 
 export const deletePost = (id) => deleteDoc(doc(db, 'posts', id));
 
-export const editpost = (id) => getDoc(doc(db, 'posts', id));
 // try {
 //   await updateDoc(docRef, {
 //     comment: newComment,
@@ -61,11 +58,11 @@ export const likePost = async (documentId, userId) => {
         document.dispatchEvent(event);
       } else {
         console.log('Ya habías dado like =).');
-        const dislike = likes.filter((like)=> like !== userId)
-        console.log(dislike)
-          
+        const dislike = likes.filter((like) => like !== userId);
+        console.log(dislike);
+
         await updateDoc(doclike, {
-          likes: dislike
+          likes: dislike,
         });
       }
     }
@@ -73,10 +70,10 @@ export const likePost = async (documentId, userId) => {
     console.error('Error al dar like :(', error);
   }
 };
+export function editPost(postId, updatedTitle) {
+  const postRef = doc(db, 'posts', postId);
 
-
-
-
-
-
-
+  return updateDoc(postRef, {
+    title: updatedTitle,
+  });
+}
