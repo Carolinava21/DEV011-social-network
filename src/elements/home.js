@@ -1,7 +1,13 @@
 // import { async } from 'regenerator-runtime';
 import {
-  addPost, paintRealTime, deletePost, editpost, updateDoc, likePost
+  addPost, 
+  paintRealTime, 
+  deletePost, 
+  editpost, 
+  likePost,
+  //removeLike
 } from '../lib/index.js';
+
 import { auth } from '../auth.js';
 
 export function home(navigateTo) {
@@ -41,7 +47,7 @@ export function home(navigateTo) {
   postButton.textContent = 'Publicar';
   postButton.addEventListener('click', () => {
     const comment = postTitle.value;
-    console.log('comentario', auth.currentUser.email);
+    // console.log('comentario', auth.currentUser.email);
     addPost(comment, auth.currentUser.email);
     postTitle.value = '';
   });
@@ -59,66 +65,56 @@ export function home(navigateTo) {
         <p class="post-title">${doc.data().comment}</p>
         <img class="edit-icon" src="/img/lapiz.png" data-id="${doc.id}" alt="Edit">
         <img class="delete-icon" src="/img/eliminar.png" data-id="${doc.id}" alt="Delete">
-        <span class="count-like">2</span>
+        <span class="count-like" id="likes-count-${doc.id}">${doc.data().likes.length}</span>
         <img class="like-icon" src="/img/like.png" data-id="${doc.id}" alt="Like">
       </div>
       `;
       publicationPost.append(post);
-
+        
+      //Este codigo es para que se elimine el post
       const btnDelete = publicationPost.querySelectorAll('.delete-icon');
       btnDelete.forEach((btn) => {
         btn.addEventListener('click', ({ target: { dataset } }) => {
-          if (doc.data().user === auth.currentUser.email) {
+          if (doc.data().user === auth.currentUser.email)  {
+            if (window.confirm('¿Estas segura de eliminar esta publicación?')) {
             deletePost(dataset.id);
           } else {
             console.log('este post no es tuyo');
+            // alert ("No es posible eliminar este Post")
           }
-        });
-      });
+         }
+         });
+       });
+     });
+        //Aqui debemos crear el codigo para editar la publicacióm
+         const btnEdit = publicationPost.querySelectorAll('.edit-icon');
+         btnEdit.forEach((btn) => {
+           btn.addEventListener('click', async (e) => {
+             const doc = await editpost(e.target.dataset.id);
+             // console.log(doc.data())
+             const tarea = doc.data();
+             post['post-title'].value = tarea.title;
+           });
+         });
+         
+     //este codigo es  para dar el like en el icono y q sea 1 por usuaria
+      const btnLike = publicationPost.querySelectorAll('.like-icon');
+      btnLike.forEach((btn) => {
+      btn.addEventListener('click', async ({ target: { dataset } }) => {
+      const postId = dataset.id;
+      await likePost(postId, auth.currentUser.email);
+     
+       });
     });
-
-    const btnEdit = publicationPost.querySelectorAll('.edit-icon');
-    btnEdit.forEach((btn) => {
-      btn.addEventListener('click', async (e) => {
-        const doc = await editpost(e.target.dataset.id);
-        // console.log(doc.data())
-        const tarea = doc.data();
-        post['post-title'].value = tarea.title;
+     // Actualizar la cantidad de likes en tiempo real en interfazz y en data
+        // Agrega un listener para escuchar el evento 'likeAdded'
+          document.addEventListener('likeAdded', () => {
+          const countLikes = publicationPost.querySelector(`#likes-count-${doc.id}`);
+          countLikes.textContent = doc.data().likes.length;
+        });     
       });
-    });
+    
 
-    const btnLike = publicationPost.querySelectorAll('.like-icon');
-    btnLike.forEach((btn) => {
-      btn.addEventListener('click', ({ target: { dataset } }) => {
-        console.log(dataset);
-        const doc = await likePost(e.target.dataset.id);
-        console.log(doc)
-      });
-    });
-  });
-
-  // Icono de Eliminar
-  // const deleteIcon = document.createElement('img');
-  // deleteIcon.classList.add('delete-icon');
-  // deleteIcon.src = '/img/eliminar.png';
-  // deleteIcon.addEventListener('click', () => {
-  //   //Lógica para eliminar la publicación
-  // });
-
-  // // Icono de Like
-  // const likeIcon = document.createElement('img');
-  // likeIcon.classList.add('like-icon');
-  // likeIcon.src = '/img/like.png';
-  // likeIcon.addEventListener('click', () => {
-  // });
-
-  // // Botón de Editar
-  // const editButton = document.createElement('button');
-  // editButton.setAttribute('class', 'post-edit');
-  // editButton.textContent = 'Editar';
-  // editButton.addEventListener('click', () => {
-  //   // Lógica para editar la publicación
-  // });
 
   const postContainerInner = document.createElement('div');
   postContainerInner.setAttribute('class', 'post-container-inner');
