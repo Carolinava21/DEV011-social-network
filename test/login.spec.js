@@ -11,6 +11,9 @@ import {
 } from '../src/auth.js';
 import * as prueba from '../src/auth.js';
 import { register } from '../src/elements/register.js';
+import * as home from '../src/elements/home.js';
+import { likePost } from '../src/lib/index.js';
+// import * as test from '../src/lib/index.js';
 
 describe('authGoogle', () => {
   test('is a function', () => {
@@ -43,4 +46,9 @@ describe('button login', () => {
   });
 });
 // prueba boton like
-
+test('have a like button', () => {
+  const DOM = document.createElement('div');
+  DOM.append((likePost));
+  const likeButton = DOM.querySelector('.like-icon');
+  expect(likeButton).not.toBe(undefined);
+});
