@@ -46,9 +46,17 @@ describe('button login', () => {
   });
 });
 // prueba boton like
-test('have a like button', () => {
+test('like button', () => {
   const DOM = document.createElement('div');
   DOM.append((likePost));
   const likeButton = DOM.querySelector('.like-icon');
   expect(likeButton).not.toBe(undefined);
+});
+
+// prueba función like
+describe('likePost', () => {
+  test('the function adds likes', () => {
+    const likedPosts = likePost('likes', 'docData');
+    expect(likedPosts).toBeDefined();
+  });
 });
