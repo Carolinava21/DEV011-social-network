@@ -3,12 +3,13 @@ import {
   addPost,
   paintRealTime,
   deletePost,
-  editPost,
+  editpost,
   likePost,
-  //removeLike
 } from '../lib/index.js';
 
 import { auth } from '../auth.js';
+
+let editingPostId = null;
 
 export function home(navigateTo) {
   const section = document.createElement('section');
@@ -45,10 +46,28 @@ export function home(navigateTo) {
   const postButton = document.createElement('button');
   postButton.setAttribute('class', 'post-button');
   postButton.textContent = 'Publicar';
-  postButton.addEventListener('click', () => {
+  postButton.addEventListener('click', async () => {
     const comment = postTitle.value;
-    // console.log('comentario', auth.currentUser.email);
-    addPost(comment, auth.currentUser.email);
+    if (editingPostId) {
+      try {
+        await editpost(editingPostId, comment);
+        console.log('Post editado correctamente');
+        paintRealTime((querySnapshot) => {
+          editingPostId = null;
+        });
+      } catch (error) {
+        console.error('Error al editar el post', error);
+      }
+    } else {
+      try {
+        await addPost(comment, auth.currentUser.email);
+        console.log('Post agregado correctamente');
+        paintRealTime((querySnapshot) => {
+        });
+      } catch (error) {
+        console.error('Error al agregar el post', error);
+      }
+    }
     postTitle.value = '';
   });
 
@@ -70,51 +89,54 @@ export function home(navigateTo) {
       </div>
       `;
       publicationPost.append(post);
-        
-      //Este codigo es para que se elimine el post
+
+      // Este codigo es para que se elimine el post
       const btnDelete = publicationPost.querySelectorAll('.delete-icon');
       btnDelete.forEach((btn) => {
         btn.addEventListener('click', ({ target: { dataset } }) => {
-          if (doc.data().user === auth.currentUser.email)  {
+          if (doc.data().user === auth.currentUser.email) {
             if (window.confirm('¿Estas segura de eliminar esta publicación?')) {
-            deletePost(dataset.id);
-          } else {
-            console.log('este post no es tuyo');
+              deletePost(dataset.id);
+            } else {
+              console.log('este post no es tuyo');
             // alert ("No es posible eliminar este Post")
+            }
           }
-         }
-         });
-       });
-     });
-        //Aqui debemos crear el codigo para editar la publicacióm
-         const btnEdit = publicationPost.querySelectorAll('.edit-icon');
-         btnEdit.forEach((btn) => {
-           btn.addEventListener('click', async (e) => {
-             const doc = await editpost(e.target.dataset.id);
-             // console.log(doc.data())
-             const tarea = doc.data();
-             post['post-title'].value = tarea.title;
-           });
-         });
-         
-     //este codigo es  para dar el like en el icono y q sea 1 por usuaria
-      const btnLike = publicationPost.querySelectorAll('.like-icon');
-      btnLike.forEach((btn) => {
-      btn.addEventListener('click', async ({ target: { dataset } }) => {
-      const postId = dataset.id;
-      await likePost(postId, auth.currentUser.email);
-     
-       });
-    });
-     // Actualizar la cantidad de likes en tiempo real en interfazz y en data
-        // Agrega un listener para escuchar el evento 'likeAdded'
-          document.addEventListener('likeAdded', () => {
-          const countLikes = publicationPost.querySelector(`#likes-count-${doc.id}`);
-          countLikes.textContent = doc.data().likes.length;
-        });     
+        });
       });
-    
+    });
+    // Aqui debemos crear el codigo para editar la publicacióm
+    const btnEdit = publicationPost.querySelectorAll('.edit-icon');
+    btnEdit.forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        editingPostId = e.target.dataset.id;
 
+        try {
+          const tarea = await editpost(editingPostId);
+          console.log(editingPostId);
+          const postTitleElement = document.getElementById('postTitle');
+          postTitleElement.value = tarea.comment;
+        } catch (error) {
+          console.error('Error al obtener el post', error);
+        }
+      });
+    });
+
+    // este codigo es  para dar el like en el icono y q sea 1 por usuaria
+    const btnLike = publicationPost.querySelectorAll('.like-icon');
+    btnLike.forEach((btn) => {
+      btn.addEventListener('click', async ({ target: { dataset } }) => {
+        const postId = dataset.id;
+        await likePost(postId, auth.currentUser.email);
+      });
+    });
+    // Actualizar la cantidad de likes en tiempo real en interfazz y en data
+    // Agrega un listener para escuchar el evento 'likeAdded'
+    document.addEventListener('likeAdded', () => {
+      const countLikes = publicationPost.querySelector(`#likes-count-${doc.id}`);
+      countLikes.textContent = doc.data().likes.length;
+    });
+  });
 
   const postContainerInner = document.createElement('div');
   postContainerInner.setAttribute('class', 'post-container-inner');
