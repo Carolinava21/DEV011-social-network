@@ -32,7 +32,7 @@ export const paintRealTime = (callback) => onSnapshot(q, callback);
 
 export const deletePost = (id) => deleteDoc(doc(db, 'posts', id));
 
-export const editpost = async (id) => {
+export const getDocument = async (id) => {
   const docRef = doc(db, 'posts', id);
   const docSnap = await getDoc(docRef);
 
@@ -41,6 +41,14 @@ export const editpost = async (id) => {
   }
   throw new Error('El documento no existe');
 };
+
+export const editPost = (documentId, comment) => {
+  const doclike = doc(db, 'posts', documentId);
+  updateDoc(doclike, {
+    comment,
+  });
+};
+
 export const likePost = async (documentId, userId) => {
   const doclike = doc(db, 'posts', documentId);
   try {

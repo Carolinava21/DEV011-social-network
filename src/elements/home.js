@@ -3,7 +3,8 @@ import {
   addPost,
   paintRealTime,
   deletePost,
-  editpost,
+  getDocument,
+  editPost,
   likePost,
 } from '../lib/index.js';
 
@@ -50,11 +51,9 @@ export function home(navigateTo) {
     const comment = postTitle.value;
     if (editingPostId) {
       try {
-        await editpost(editingPostId, comment);
+        await editPost(editingPostId, comment);
         console.log('Post editado correctamente');
-        paintRealTime((querySnapshot) => {
           editingPostId = null;
-        });
       } catch (error) {
         console.error('Error al editar el post', error);
       }
@@ -62,8 +61,6 @@ export function home(navigateTo) {
       try {
         await addPost(comment, auth.currentUser.email);
         console.log('Post agregado correctamente');
-        paintRealTime((querySnapshot) => {
-        });
       } catch (error) {
         console.error('Error al agregar el post', error);
       }
@@ -112,7 +109,7 @@ export function home(navigateTo) {
         editingPostId = e.target.dataset.id;
 
         try {
-          const tarea = await editpost(editingPostId);
+          const tarea = await getDocument(editingPostId);
           console.log(editingPostId);
           const postTitleElement = document.getElementById('postTitle');
           postTitleElement.value = tarea.comment;
